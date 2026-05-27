@@ -1,0 +1,681 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  /* BARBERCROP Premium Matte-Dark Color Scheme */
+  --primary: #111111;         /* Absolute deep black backdrop */
+  --secondary: #161616;       /* Solid dark element backgrounds */
+  --accent: #ff2e2e;          /* Signature aggressive crimson red */
+  --accent-hover: #d61c1c;
+  --text: #ffffff;            /* Sharp high-contrast white */
+  --text-muted: #999999;      /* Subdued muted silver grey */
+  --success: #10b981;
+  --danger: #ef4444;
+  --border: #222222;          /* Subtle tile borders */
+  --border-focus: #444444;
+  --card-bg: #161616;
+  
+  /* Smooth Human Animation Easing Curve */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--primary);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Overrides based on Sketch Reference */
+h1, h2, h3, .navbar__brand, .slots-label, .form-label, .btn {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* --- Navbar: Absolute Flat & Minimalist Fix --- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(17, 17, 17, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+  z-index: 1000;
+}
+
+.navbar__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem; /* Fixes elements touching the extreme screen edges */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar__brand {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.brand__accent {
+  color: var(--accent);
+  margin-right: 6px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+.navbar__links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.25s var(--ease-out);
+}
+
+.navbar__link:hover {
+  color: var(--text);
+}
+
+.navbar__link--staff {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* --- Hero: Full Editorial Impact Asymmetry --- */
+.hero {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 8rem 0 4rem;
+  background: linear-gradient(to right, rgba(17, 17, 17, 0.95) 45%, rgba(17, 17, 17, 0.4) 100%), 
+              url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+}
+
+.hero__overlay {
+  display: none; /* Removed the template-style purple/blue multi-gradient overlay */
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+  text-align: left; /* Shifted left to respect the Sketch design structure */
+}
+
+.hero__title {
+  font-size: 4.2rem;
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.hero__info-block {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+
+.hero__info-block i {
+  color: var(--accent);
+  margin-right: 8px;
+  width: 16px;
+}
+
+/* --- Base Layout Sections --- */
+section {
+  padding: 8rem 0;
+}
+
+.section-header {
+  text-align: left; /* No more template center alignment */
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.section-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  max-width: 600px;
+  font-weight: 300;
+}
+
+/* --- Services: Clean Grid with Dashed Lines --- */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+}
+
+.service-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px; /* Human design favor sharp editorial corners */
+  overflow: hidden;
+  transition: border-color 0.3s var(--ease-out);
+  position: relative;
+}
+
+.service-card:hover {
+  border-color: var(--border-focus);
+}
+
+.service-card.featured {
+  border: 1px solid var(--accent); /* Elegant subtle accent border frame */
+}
+
+.service-card__badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: var(--accent);
+  color: var(--text);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Dropped the large vector icons inside empty blocks entirely to support high-end branding */
+.service-card__image {
+  display: none; 
+}
+
+.service-card__content {
+  padding: 2.5rem;
+}
+
+.service-card__header-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.service-card__icon {
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+
+.service-card__title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.service-card__desc {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.service-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--border);
+}
+
+.service-card__duration {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.service-card__duration i {
+  margin-right: 4px;
+}
+
+.service-card__price {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: 'Oswald', sans-serif;
+}
+
+.service-card__btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: transparent;
+  border: 1px solid var(--border-focus);
+  color: var(--text);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.25s var(--ease-out);
+}
+
+.service-card__btn:hover {
+  background: var(--text);
+  color: var(--primary);
+  border-color: var(--text);
+}
+
+/* --- How It Works Split Grid Layout --- */
+.how-it-works {
+  background: #151515;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.info-layout-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hours-schedule-box {
+  margin-top: 2rem;
+  padding: 2.5rem;
+  background: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.schedule-title {
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.schedule-grid p {
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+}
+
+.schedule-grid p strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* --- Booking Interface --- */
+.booking-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Custom 2-column balanced layout */
+  gap: 5rem;
+  align-items: start;
+}
+
+.booking-card {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 3.5rem;
+}
+
+.booking-card__header {
+  margin-bottom: 2.5rem;
+  text-align: left;
+}
+
+.booking-card__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.booking-card__title i {
+  display: none; /* Clean typography clarity */
+}
+
+.booking-card__subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* --- High-End Architectural Input Fields --- */
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  background: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.25s var(--ease-out);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: none; /* Dropped bright box shadow glows */
+}
+
+.form-display {
+  padding: 1rem 1.2rem;
+  background: #1a1a1a;
+  border: 1px dashed var(--border-focus);
+  border-radius: 2px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.slots-container {
+  display: none;
+  margin: 2rem 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.slots-container.active {
+  display: block;
+}
+
+.slots-label {
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.5rem;
+}
+
+.time-slot {
+  padding: 0.75rem 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-muted);
+  text-align: center;
+  cursor: pointer;
+  font-weight: 400;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.85rem;
+  transition: all 0.2s var(--ease-out);
+}
+
+.time-slot:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+.time-slot.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* --- Action Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem 2.5rem;
+  background: var(--accent);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  text-decoration: none;
+}
+
+.btn:hover:not(:disabled) {
+  background: transparent;
+  color: var(--accent);
+}
+
+.btn:disabled {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.btn--hero {
+  padding: 1.1rem 3.5rem;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+/* --- Feedback Notification States --- */
+.message {
+  padding: 1.2rem;
+  border-radius: 2px;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+.message.success {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 3px solid var(--success);
+  color: #6ee7b7;
+}
+
+.message.error {
+  background: rgba(239, 68, 68, 0.08);
+  border-left: 3px solid var(--danger);
+  color: #fca5a5;
+}
+
+/* --- Footer Area --- */
+.footer {
+  background: var(--primary);
+  border-top: 1px solid var(--border);
+  padding: 6rem 0 3rem;
+  margin-top: 6rem;
+}
+
+.footer__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 3rem;
+}
+
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer__logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.05em;
+}
+
+.footer__brand p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 300;
+}
+
+.footer__contact-info {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.footer__contact-info strong {
+  font-family: 'Oswald', sans-serif;
+  color: var(--text);
+}
+
+.footer__links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.footer__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.05em;
+  transition: color 0.2s var(--ease-out);
+}
+
+.footer__link:hover {
+  color: var(--accent);
+}
+
+.footer__bottom {
+  text-align: left;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* --- Loading States --- */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 50%;
+  left: 50%;
+  margin-left: -9px;
+  margin-top: -9px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Responsive Adaptations --- */
+@media (max-width: 968px) {
+  .hero {
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.95) 60%, rgba(17, 17, 17, 0.6) 100%), 
+                url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    text-align: center;
+  }
+  .hero__content {
+    max-width: 100%;
+    text-align: center;
+  }
+  .section-header {
+    text-align: center;
+  }
+  .booking-wrapper {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  .footer__content {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero__title {
+    font-size: 2.8rem;
+  }
+  .navbar__links {
+    gap: 1.5rem;
+  }
+  .booking-card {
+    padding: 2.5rem 1.5rem;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

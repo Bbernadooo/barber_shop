@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BARBERCROP | Professional Barbershop for Men Only</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=6">
+    <style>
+        /* ── Auth Modal ── */
+        .auth-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-modal-overlay.active {
+            display: flex;
+        }
+        .auth-modal {
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            animation: modalIn 0.2s ease;
+        }
+        @keyframes modalIn {
+            from { opacity:0; transform: translateY(-20px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+        .auth-modal__close {
+            position: absolute;
+            top: 14px; right: 16px;
+            background: none; border: none;
+            color: #666; font-size: 1.4rem;
+            cursor: pointer; line-height: 1;
+        }
+        .auth-modal__close:hover { color: #fff; }
+        .auth-modal__tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.75rem;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .auth-modal__tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+        .auth-modal__tab.active {
+            color: #ff2e2e;
+            border-bottom-color: #ff2e2e;
+        }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .auth-form h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1.4rem;
+            color: #fff;
+        }
+        .auth-form p.sub {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 0 0 1.5rem;
+        }
+        .auth-form .form-group { margin-bottom: 1rem; }
+        .auth-form label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 0.4rem;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            background: #111;
+            border: 1px solid #2a2a2a;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .auth-form input:focus {
+            border-color: #ff2e2e;
+            outline: none;
+        }
+        .auth-form .btn-auth {
+            width: 100%;
+            padding: 0.8rem;
+            background: #ff2e2e;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .auth-form .btn-auth:hover { background: #cc2424; }
+        .auth-form .btn-guest {
+            width: 100%;
+            padding: 0.7rem;
+            background: transparent;
+            color: #666;
+            border: 1px solid #2a2a2a;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .auth-form .btn-guest:hover { color: #fff; border-color: #444; }
+        .auth-error {
+            background: rgba(255,46,46,0.1);
+            color: #ff2e2e;
+            padding: 0.6rem 0.8rem;
+            border-left: 3px solid #ff2e2e;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .auth-error.show { display: block; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Auth Modal ── -->
+    <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <button class="auth-modal__close" onclick="closeAuthModal()">✕</button>
+
+            <div class="auth-modal__tabs">
+                <button class="auth-modal__tab active" onclick="switchTab('login')">Login</button>
+                <button class="auth-modal__tab" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-form active" id="modalLoginForm">
+                <h3>Welcome Back</h3>
+                <p class="sub">Login to get personalized barber suggestions.</p>
+                <div class="auth-error" id="loginError"></div>
+                <form method="POST" action="/Barber_shop/public/index.php?page=customer-login"
+                      onsubmit="submitAuthForm(event, 'login')">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" id="loginEmail" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn-auth">Login & Continue</button>
+                    <button type="button" class="btn-guest" onclick="continueAsGuest()">
+                        Continue as Guest
+                    </button>
+                </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="auth-form" id="modalSignupForm">
+                <h3>Create Account</h3>
+                <p class="sub">Sign up to book faster and track your history.</p>
+                <div class="auth-error" id="signupError"></div>
+                <form method="POST" action="/Barber_shop/public/index.php?page=customer-signup"
+                      onsubmit="submitAuthForm(event, 'signup')">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" id="signupName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone <span style="color:#555;">(optional)</span></label>
+                        <input type="tel" name="phone" id="signupPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" id="signupPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="confirm_password" id="signupConfirm" required>
+                    </div>
+                    <button type="submit" class="btn-auth">Create Account & Continue</button>
+                    <button type="button" class="btn-guest" onclick="continueAsGuest()">
+                        Continue as Guest
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="navbar__container">
+            <a href="#" class="navbar__brand">
+                <span class="brand__accent">//</span> ፏ_BARBER
+            </a>
+            <ul class="navbar__links">
+                <li><a href="#services" class="navbar__link">Services</a></li>
+                <li><a href="#booking" class="navbar__link">Book Now</a></li>
+                <li>
+                    <a href="/Barber_shop/public/index.php?page=login"
+                       class="navbar__link navbar__link--staff">
+                        <i class="fas fa-user-shield"></i> Staff Portal
+                    </a>
+                </li>
+                <li>
+                    <div id="customer-nav"
+                         style="display:flex; align-items:center; gap:10px; margin-left:4px;">
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+            <h1 class="hero__title">WE WILL GIVE YOU SHARPE LOOK</h1>
+            <p class="hero__info-block">
+                <i class="fas fa-map-marker-alt"></i> Bole District, Camerun St, Addis Ababa, Ethiopia<br>
+                <i class="fas fa-phone-alt"></i> +251 11 234 5678
+            </p>
+            <a href="#booking" class="btn btn--hero">Book Now</a>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">WHAT WE PROVIDE</h2>
+                <p class="section-subtitle">Premium grooming treatments tailored with absolute technique and master precision.</p>
+            </div>
+            <div class="services-grid">
+
+                <div class="service-card" data-service-id="1" data-duration="30">
+                    <div class="service-card__content">
+                        <div class="service-card__header-row">
+                            <i class="fas fa-cut service-card__icon"></i>
+                            <h3 class="service-card__title">HAIRCUT</h3>
+                        </div>
+                        <p class="service-card__desc">Precision design cut tailored directly to your face shape. Includes expert consultation, refreshing hair wash, and final premium styling.</p>
+                        <div class="service-card__meta">
+                            <span class="service-card__duration"><i class="far fa-clock"></i> 30 MIN</span>
+                            <span class="service-card__price">FROM 350 ETB</span>
+                        </div>
+                        <button class="service-card__btn" type="button"
+                                onclick="handleServiceSelect('1', '30')">Book Service</button>
+                    </div>
+                </div>
+
+                <div class="service-card" data-service-id="2" data-duration="25">
+                    <div class="service-card__content">
+                        <div class="service-card__header-row">
+                            <i class="fas fa-compress service-card__icon"></i>
+                            <h3 class="service-card__title">BEARDTRIM & SHAPE</h3>
+                        </div>
+                        <p class="service-card__desc">Expert beard grooming using specialized oils. Includes crisp lining options, symmetrical trimming, and an authentic hot towel treatment wrap.</p>
+                        <div class="service-card__meta">
+                            <span class="service-card__duration"><i class="far fa-clock"></i> 25 MIN</span>
+                            <span class="service-card__price">FROM 250 ETB</span>
+                        </div>
+                        <button class="service-card__btn" type="button"
+                                onclick="handleServiceSelect('2', '25')">Book Service</button>
+                    </div>
+                </div>
+
+                <div class="service-card featured" data-service-id="3" data-duration="60">
+                    <div class="service-card__badge">RECOMMENDED</div>
+                    <div class="service-card__content">
+                        <div class="service-card__header-row">
+                            <i class="fas fa-crown service-card__icon"></i>
+                            <h3 class="service-card__title">THE FULL COMBINATION</h3>
+                        </div>
+                        <p class="service-card__desc">Our signature ultimate package. Includes a customized luxury haircut, master line beard grooming, charcoal face mask, and deep massage finish.</p>
+                        <div class="service-card__meta">
+                            <span class="service-card__duration"><i class="far fa-clock"></i> 60 MIN</span>
+                            <span class="service-card__price">FROM 550 ETB</span>
+                        </div>
+                        <button class="service-card__btn" type="button"
+                                onclick="handleServiceSelect('3', '60')">Book Service</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <div class="booking-wrapper">
+                <div class="info-layout-left">
+                    <div class="section-header">
+                        <h2 class="section-title">TEAM OF PROFESSIONALS IS WAITING FOR YOU</h2>
+                    </div>
+                    <div class="hours-schedule-box">
+                        <h3 class="schedule-title">SPECIAL OPENING HOURS</h3>
+                        <div class="schedule-grid">
+                            <p><strong>MONDAY - FRIDAY:</strong> 9:00 AM - 7:30 PM</p>
+                            <p><strong>SATURDAY:</strong> 9:00 AM - 6:00 PM</p>
+                            <p><strong>SUNDAY:</strong> CLOSED</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="booking" class="booking-card">
+                    <div class="booking-card__header">
+                        <h2 class="booking-card__title">SCHEDULE YOUR VISIT</h2>
+                        <p class="booking-card__subtitle">Complete the fields below to instantly secure your seat</p>
+                    </div>
+
+                    <form id="bookingForm">
+                        <input type="hidden" id="service" name="service">
+                        <input type="hidden" id="serviceDuration" name="duration">
+
+                        <div class="form-group">
+                            <label class="form-label">SELECTED WORK TREATMENT</label>
+                            <div id="selectedServiceDisplay" class="form-display">
+                                <span class="form-display__empty">Select a service above to start booking</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="staff">CHOOSE DESIGNATED MASTER BARBER</label>
+                            <select id="staff" class="form-control" required>
+                                <option value="">Loading barbers...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="date">PREFERRED APPOINTMENT DATE</label>
+                            <input type="date" id="date" class="form-control" required>
+                        </div>
+
+                        <div id="slotsContainer" class="slots-container">
+                            <div class="slots-label"><i class="far fa-clock"></i> CHOOSE TIMING SLOT</div>
+                            <div id="timeSlots" class="time-slots"></div>
+                            <input type="hidden" id="selectedTime" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="name">YOUR FULL NAME</label>
+                                <input type="text" id="name" class="form-control" placeholder="Abebe Bikila" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="email">EMAIL ADDRESS</label>
+                                <input type="email" id="email" class="form-control" placeholder="client@domain.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="phone">PHONE NUMBER</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="+251 911 00 00 00" required>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn btn--full">
+                            CONFIRM RESERVATION
+                        </button>
+
+                        <div id="message" class="message"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand">
+                    <span class="footer__logo">// ፏ_BARBER</span>
+                    <p>Professional Barbershop for Men Only.</p>
+                </div>
+                <div class="footer__contact-info">
+                    <p><strong>CALL US:</strong> +251 11 234 5678</p>
+                    <p><strong>LOCATION:</strong> Bole St, Addis Ababa</p>
+                </div>
+                <div class="footer__links">
+                    <a href="#services" class="footer__link">Services</a>
+                    <a href="#booking" class="footer__link">Book Seat</a>
+                    <a href="/Barber_shop/public/index.php?page=login" class="footer__link">Staff Entry</a>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 ፏ_BARBER. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/booking.js?v=6"></script>
+
+    <script>
+    // ── Track if customer is logged in ──
+    let customerLoggedIn = false;
+    let pendingServiceId = null;
+    let pendingDuration  = null;
+
+    // ── Check login status + load suggestions ──
+    fetch('/Barber_shop/api/suggestions.php')
+        .then(r => r.json())
+        .then(data => {
+            customerLoggedIn = data.logged_in;
+            const nav = document.getElementById('customer-nav');
+            if (!nav) return;
+
+            if (data.logged_in) {
+                nav.innerHTML = `
+                    <span style="color:#aaa; font-size:0.85rem; margin-right:8px;">
+                        Hi, <strong style="color:#fff;">${data.customer_name}</strong>
+                    </span>
+                    <a href="/Barber_shop/public/index.php?page=customer-logout"
+                       style="color:#ff2e2e; font-size:0.85rem; text-decoration:none;">Logout</a>
+                `;
+                if (data.barber || data.time) {
+                    showSuggestionBanner(data);
+                }
+            } else {
+                nav.innerHTML = `
+                    <a href="#" onclick="openAuthModal(); return false;"
+                       style="color:#aaa; font-size:0.85rem; text-decoration:none; margin-right:10px;">Login</a>
+                    <a href="#" onclick="openAuthModal('signup'); return false;"
+                       style="background:#ff2e2e; color:#fff; padding:7px 14px; border-radius:4px;
+                              font-size:0.85rem; text-decoration:none; font-weight:bold;">Sign Up</a>
+                `;
+            }
+        })
+        .catch(() => {
+            customerLoggedIn = false;
+        });
+
+    // ── Called when customer clicks "Book Service" ──
+    function handleServiceSelect(serviceId, duration) {
+        pendingServiceId = serviceId;
+        pendingDuration  = duration;
+
+        if (customerLoggedIn) {
+            // Already logged in — just select the service
+            selectService(serviceId, duration);
+        } else {
+            // Show login/signup modal first
+            openAuthModal();
+        }
+    }
+
+    // ── Modal controls ──
+    function openAuthModal(tab) {
+        document.getElementById('authModal').classList.add('active');
+        switchTab(tab || 'login');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuthModal() {
+        document.getElementById('authModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.auth-modal__tab').forEach((t, i) => {
+            t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'signup' && i === 1));
+        });
+        document.getElementById('modalLoginForm').classList.toggle('active',  tab === 'login');
+        document.getElementById('modalSignupForm').classList.toggle('active', tab === 'signup');
+    }
+
+    // Close modal when clicking backdrop
+    document.getElementById('authModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAuthModal();
+    });
+
+    // ── Guest continues without logging in ──
+    function continueAsGuest() {
+        closeAuthModal();
+        if (pendingServiceId) {
+            selectService(pendingServiceId, pendingDuration);
+        }
+    }
+
+    // ── Handle login/signup form submit inside modal ──
+    function submitAuthForm(e, type) {
+        e.preventDefault();
+        const errorEl = document.getElementById(type === 'login' ? 'loginError' : 'signupError');
+        errorEl.classList.remove('show');
+
+        const form   = e.target;
+        const data   = new FormData(form);
+        const params = new URLSearchParams(data);
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString()
+        })
+        .then(r => {
+            // If redirected to booking page = success
+            if (r.redirected && r.url.includes('booking.html')) {
+                closeAuthModal();
+                customerLoggedIn = true;
+                if (pendingServiceId) {
+                    selectService(pendingServiceId, pendingDuration);
+                }
+                // Reload to refresh navbar name
+                window.location.reload();
+                return;
+            }
+            // If still on auth page = error, reload into modal
+            return r.text().then(html => {
+                const match = html.match(/class="error-msg"[^>]*>(.*?)<\/div>/s);
+                if (match) {
+                    errorEl.textContent = match[1].replace(/<[^>]+>/g, '');
+                    errorEl.classList.add('show');
+                } else {
+                    // Success — reload
+                    window.location.reload();
+                }
+            });
+        })
+        .catch(() => {
+            errorEl.textContent = 'Network error. Please try again.';
+            errorEl.classList.add('show');
+        });
+    }
+
+    // ── Suggestion banner ──
+    function showSuggestionBanner(data) {
+        const existing = document.getElementById('suggestion-banner');
+        if (existing) existing.remove();
+
+        const banner = document.createElement('div');
+        banner.id = 'suggestion-banner';
+        banner.style.cssText = `
+            position:fixed; bottom:20px; right:20px; z-index:9999;
+            background:#161616; border:1px solid #ff2e2e; border-radius:8px;
+            padding:1rem 1.25rem; max-width:300px;
+            box-shadow:0 8px 30px rgba(0,0,0,0.5); color:#fff; font-family:sans-serif;
+        `;
+
+        let content = `
+            <div style="font-size:0.8rem; color:#ff2e2e; text-transform:uppercase;
+                        letter-spacing:0.05em; margin-bottom:10px;">
+                ✦ Based on your history
+            </div>`;
+
+        if (data.barber) {
+            content += `<div style="margin-bottom:6px; font-size:0.9rem;">
+                Preferred barber: <strong>${data.barber.name}</strong></div>`;
+        }
+        if (data.time) {
+            const hour = parseInt(data.time.split(':')[0]);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const display = ((hour % 12) || 12) + ':00 ' + ampm;
+            content += `<div style="font-size:0.9rem; margin-bottom:10px;">
+                Preferred time: <strong>${display}</strong></div>`;
+        }
+
+        content += `
+            <div style="display:flex; gap:8px; margin-top:10px;">
+                <button onclick="applyPreferences()"
+                        style="flex:1; background:#ff2e2e; border:none; color:#fff;
+                               padding:6px; border-radius:4px; cursor:pointer; font-size:0.8rem;">
+                    Apply
+                </button>
+                <button onclick="document.getElementById('suggestion-banner').remove()"
+                        style="flex:1; background:transparent; border:1px solid #333;
+                               color:#888; padding:6px; border-radius:4px; cursor:pointer; font-size:0.8rem;">
+                    Dismiss
+                </button>
+            </div>`;
+
+        banner.innerHTML = content;
+        document.body.appendChild(banner);
+        window._suggestions = data;
+    }
+
+    function applyPreferences() {
+        const data = window._suggestions;
+        if (!data) return;
+
+        if (data.barber) {
+            const staffSelect = document.getElementById('staff');
+            if (staffSelect) {
+                staffSelect.value = data.barber.id;
+                staffSelect.dispatchEvent(new Event('change'));
+            }
+        }
+        if (data.time) {
+            window._preferredTime = data.time.substring(0, 5);
+        }
+
+        const banner = document.getElementById('suggestion-banner');
+        if (banner) banner.remove();
+        document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
+
+</body>
+</html>
